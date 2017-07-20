@@ -43,12 +43,13 @@ public class OAuthServlet extends HttpServlet {
 		//用户同意授权
 		if (!(code.equals("authdeny"))) {
 			//获取网页授权凭证 access_token
-			WeiXinOauth2Token weiXinOauth2Token=AdvancedUtil.getOauth2AccessToken(WeiXinCommon.appID, WeiXinCommon.appsecret, code);
+			AdvancedUtil advancedUtil=new AdvancedUtil();
+			WeiXinOauth2Token weiXinOauth2Token=advancedUtil.getAdvancedMethod().getOauth2AccessToken(WeiXinCommon.appID, WeiXinCommon.appsecret, code);
 			String accessToken=weiXinOauth2Token.getAccessToken();
 			//获得用户的标志
 			String openID=weiXinOauth2Token.getOpenId();
 			//拉取用户信息
-			SNSUserInfo snsUserInfo=AdvancedUtil.getSNSUserInfo(accessToken, openID, "zh_CN");
+			SNSUserInfo snsUserInfo=advancedUtil.getAdvancedMethod().getSNSUserInfo(accessToken, openID, "zh_CN");
 			
 			//设置要传递的信息 ,将用户信息放到 request 对象中，这样可以传递到目标页面,
 			req.setAttribute("snsUserInfo", snsUserInfo);

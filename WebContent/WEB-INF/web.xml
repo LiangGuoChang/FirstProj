@@ -21,6 +21,7 @@
   <servlet>
   <servlet-name>WxServlet</servlet-name>
   <servlet-class>lgc.servlet.WxServlet</servlet-class>
+  <load-on-startup>0</load-on-startup>
   </servlet>
   
   <servlet-mapping>

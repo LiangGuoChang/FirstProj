@@ -117,8 +117,9 @@ public class MessageService {
 						
 					}
 				}else {
-					//不包含“附近”,将用户发送的文本消息原样回复
-					textMessage.setContent(req_content);
+					//不包含“附近”,则使用自动聊天功能
+					respContent=ChatService.chat(req_fromUserName, req_createTime, req_content);
+					textMessage.setContent(respContent);
 					//将文本消息对象转换为XML格式
 					respXml=MessageUtil.messageToXml(textMessage);
 				}
@@ -138,7 +139,8 @@ public class MessageService {
 				//语音的MediaId
 				String mediaId=reqMap.get("MediaId");
 				//从微信服务器下载该语音到本地服务器下
-				String downLoadFile=AdvancedUtil.downLoadMedia(access_token, mediaId, WeiXinCommon.downLoadFilePathComm+"/voice/");
+				AdvancedUtil advancedUtil=new AdvancedUtil();
+				String downLoadFile=advancedUtil.getAdvancedMethod().downLoadMedia(access_token, mediaId, WeiXinCommon.downLoadFilePathComm+"/voice/");
 				System.out.println("MessageService-downLoadFile::"+downLoadFile);
 				
 				respContent="您发送的是语音消息";

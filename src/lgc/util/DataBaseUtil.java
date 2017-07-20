@@ -1,14 +1,15 @@
 package lgc.util;
 
-
-import java.nio.file.attribute.UserPrincipalLookupService;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
+import lgc.bean.database.Knowledge;
 import lgc.bean.database.UserLocation;
 
 
@@ -44,6 +45,172 @@ public class DataBaseUtil {
 	}
 	
 	/**
+	 * 释放 jdbc 资源
+	 * 
+	 * @param con 数据库链接
+	 * @param ps
+	 * @param rs 数据库结果集
+	 */
+	private static void releaseResources(Connection con,PreparedStatement ps,ResultSet rs){
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("releaseResources::\n"+e.toString());
+		}
+	}
+	
+	/**
+	 * 获取知识问答表中的所有记录
+	 * 
+	 * @return List<Knowledge>
+	 */
+	public List<Knowledge> findAllKnowledge(){
+		List<Knowledge> knowledges=new ArrayList<Knowledge>();
+		String sqlStr = "select * from knowledge";
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try {
+			ps=conn.prepareStatement(sqlStr);
+			rs=ps.executeQuery();
+			while (rs.next()) {
+				Knowledge knowledge=new Knowledge();
+				knowledge.setId(rs.getInt("id"));
+				knowledge.setQuestion(rs.getString("question"));
+				knowledge.setAnswer(rs.getString("answer"));
+				knowledge.setCategory(rs.getInt("category"));
+				knowledges.add(knowledge);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("findAllKnowledge::\n"+e.toString());
+		}finally {
+			//释放资源
+			releaseResources(conn, ps, rs);
+		}
+		return knowledges;
+	}
+	
+	/**
+	 * 获取上一次聊天记录的类型
+	 * @param openId 用户id
+	 * @return int 返回类型 1-普通聊天，2-笑话，3-上下文
+	 */
+	public int getLastCategory(String openId){
+		int category=-1;
+		String sqlStr="select top 1 chat_category from chat_log where open_id=? order by id desc";
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try {
+			ps=conn.prepareStatement(sqlStr);
+			ps.setString(1, openId);
+			rs=ps.executeQuery();
+			if (rs.next()) {
+				category=rs.getInt("chat_category");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getLastCategory::\n"+e.toString());
+		}finally {
+			//释放资源
+			releaseResources(conn, ps, rs);
+		}
+		return category;
+	}
+	
+	/**
+	 * 根据问答知识id，随机获取一条答案回复用户
+	 * @param pid 问答知识id
+	 * @return String 返回回答内容
+	 */
+	public String getOneKnowledgeSub(int pid){
+		String knowledgeAnswer="";
+		String sqlStr="select top 1 answer from knowledge_sub where pid=? order by rand()";
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try {
+			ps=conn.prepareStatement(sqlStr);
+			ps.setInt(1, pid);
+			rs=ps.executeQuery();
+			if (rs.next()) {
+				knowledgeAnswer=rs.getString("answer");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getOneKnowledgeSub::\n"+e.toString());
+		}finally {
+			//释放资源
+			releaseResources(conn, ps, rs);
+		}
+		return knowledgeAnswer;
+	}
+	
+	/**
+	 * 随机获取一条笑话
+	 * @return
+	 */
+	public String getJoke(){
+		String jokeContent="";
+		String sqlStr="SELECT TOP 1 joke_content FROM joke ORDER BY NEWID()";
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try {
+			ps=conn.prepareStatement(sqlStr);
+			rs=ps.executeQuery();
+			if (rs.next()) {
+				jokeContent=rs.getString("joke_content");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getJoke::\n"+e.toString());
+		}finally {
+			//释放资源
+			releaseResources(conn, ps, rs);
+		}
+		return jokeContent;
+	}
+	
+	/**
+	 * 保存聊天记录
+	 * @param open_id 用户id
+	 * @param create_time 创建时间
+	 * @param req_msg 用户发送的消息
+	 * @param resp_msg 公众号回复的消息
+	 * @param chat_category 聊天消息类型，1-普通聊天，2-笑话，3-上下文
+	 * @return
+	 */
+	public int saveChatLog(String open_id,String create_time,String req_msg,String resp_msg,int chat_category){
+		String sqlStr="insert into chat_log(open_id, create_time, req_msg, resp_msg, chat_category) values(?, ?, ?, ?, ?)";
+		int insert = -1;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try {
+			ps=conn.prepareStatement(sqlStr);
+			ps.setString(1, open_id);
+			ps.setString(2, create_time);
+			ps.setString(3, req_msg);
+			ps.setString(4, resp_msg);
+			ps.setInt(5, chat_category);
+			insert=ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("saveChatLog::\n"+e.toString());
+		}finally {
+			//释放资源
+			releaseResources(conn, ps, rs);
+		}
+		return insert;
+	}
+	
+	/**
 	 * 向数据库插入用户发送过来的位置信息
 	 * @param openID 用户标识
 	 * @param lng 用户的经度
@@ -55,19 +222,22 @@ public class DataBaseUtil {
 	public int saveUserLocation(String openID,String lng,String lat,String bd09Lng,String bd09Lat){
 		String sqlStr = "insert into user_location(open_id, lng, lat, bd09_lng, bd09_lat) values (?, ?, ?, ?, ?)";
 		int insertIndex=-1;
+		PreparedStatement ps=null;
 		try {
-			PreparedStatement ps=conn.prepareStatement(sqlStr);
+			ps=conn.prepareStatement(sqlStr);
 			ps.setString(1, openID);
 			ps.setString(2, lng);
 			ps.setString(3, lat);
 			ps.setString(4, bd09Lng);
 			ps.setString(5, bd09Lat);
 			insertIndex=ps.executeUpdate();
-			//释放资源
-			ps.close();
-			conn.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("saveUserLocation::\n"+e.toString());
+		}finally {
+			//释放资源
+			releaseResources(conn, ps, null);
 		}
 		return insertIndex;
 	}
@@ -79,19 +249,13 @@ public class DataBaseUtil {
 	 */
 	public UserLocation getLastLoaction(String openId){
 		UserLocation userLocation=null;
-//		String sqlStr = "select open_id, lng, lat, bd09_lng, bd09_lat from user_location where open_id=? order by id desc limit 1";
-		
-		//select * from table order by id desc limit 1
 		String sqlStr = "select top 1 * from user_location where open_id=? order by id desc";
-		
+		PreparedStatement ps=null;
+		ResultSet rs=null;
 		try {
-			PreparedStatement ps=conn.prepareStatement(sqlStr);
+			ps=conn.prepareStatement(sqlStr);
 			ps.setString(1, openId);
-			
-			
-//			ResultSet rs=queryData(sqlStr);
-			ResultSet rs=ps.executeQuery();
-			
+			rs=ps.executeQuery();
 			if (rs.next()) {
 				userLocation=new UserLocation();
 				userLocation.setOpenId(rs.getString("open_id"));
@@ -100,13 +264,12 @@ public class DataBaseUtil {
 				userLocation.setBd09Lng(rs.getString("bd09_lng"));
 				userLocation.setBd09Lat(rs.getString("bd09_lat"));
 			}
-			//释放资源
-			rs.close();
-//			ps.close();
-			conn.close();
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
+			System.out.println("getLastLoaction::\n"+e.toString());
+		}finally {
+			//释放资源
+			releaseResources(conn, ps, rs);
 		}
 		return userLocation;
 	}

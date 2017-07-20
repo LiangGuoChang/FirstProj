@@ -10,6 +10,7 @@ import lgc.bean.pojo.WeiXinPermanentQRCode;
 import lgc.bean.pojo.WeiXinTemporaryQRCode;
 import lgc.bean.pojo.WeiXinUserInfo;
 import lgc.bean.pojo.WeiXinUserList;
+import lgc.service.ChatService;
 import lgc.util.AdvancedUtil;
 import lgc.util.CommonUtil;
 
@@ -31,6 +32,10 @@ public class HelloWorld {
 		Token token=CommonUtil.getToken(appID, appsecret);
 		String access_token=token.getAccess_token();
 		System.out.println("access_token::"+access_token);
+		
+//		String classPath=ChatService.getIndexDir();
+//		System.out.println("classPath::"+"\n"+classPath);
+		
 		/*
 		getWeixinUserInfo(access_token,user_openId);
 		
@@ -49,13 +54,15 @@ public class HelloWorld {
 		// http://2d625a40.ngrok.io/WeiXinMedia/voice/msg1.amr
 //		uploadMedia(access_token, "voice", "http://03b9ab9a.ngrok.io/WeiXinMedia/voice/uploadtest.jpg");
 		
-		WeiXinMedia media=AdvancedUtil.uploadTemporaryMedia(access_token, "voice", "http://2d625a40.ngrok.io/WeiXinMedia/voice/begin.mp3");
+//		WeiXinMedia media=AdvancedUtil.uploadTemporaryMedia(access_token, "voice", "http://2d625a40.ngrok.io/WeiXinMedia/voice/begin.mp3");
 //		System.out.println(media.getWeixinMedia());
 		
 //		String downLoadfile=AdvancedUtil.downLoadMedia(access_token, mediaId, savePath);
-		
+		AdvancedUtil advancedUtil=new AdvancedUtil();
+		String hello=advancedUtil.getAdvancedMethod().getHello();
+		System.out.println(hello);
 	}
-	
+	/*
 	//创建二维码
 	private static void getQRcode(String access_token){
 
@@ -79,13 +86,13 @@ public class HelloWorld {
 	//获取指定openId的用户的基本信息
 	private static void getWeixinUserInfo(String access_token,String openId){
 		WeiXinUserInfo userInfo=AdvancedUtil.getUserInfo(access_token, openId);
-		/*byte[] bytes=userInfo.getWeixinUserInfo().getBytes();
+		byte[] bytes=userInfo.getWeixinUserInfo().getBytes();
 		try {
 			System.out.println(new String(bytes, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 //			e.printStackTrace();
-		}*/
+		}
 		
 		System.out.println(userInfo.getWeixinUserInfo());
 	}
@@ -125,5 +132,5 @@ public class HelloWorld {
 	private static void uploadMedia(String accessToken, String type, String mediaFileUrl){
 		WeiXinMedia media=AdvancedUtil.uploadTemporaryMedia(accessToken, type, mediaFileUrl);
 		System.out.println(media.getWeixinMedia());
-	}
+	}*/
 }

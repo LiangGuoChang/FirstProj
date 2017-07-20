@@ -114,9 +114,10 @@ public class MenuManager {
 			}
 			
 			//组装文本客服消息  oA1HcvwJj9KKuPC6fmRWm8h6Qv4I  oA1Hcv9PfGShFQfsHXEdjQrPGPmQ oA1Hcv3WBD5x2oZd42nR3Ioq0dVs oA1Hcv3fxuC-9dz52m-oDBgFAUPY
-			String customMsg=AdvancedUtil.makeTextCustomMessage("oA1HcvwJj9KKuPC6fmRWm8h6Qv4I", "你是糠糠，最美。");
+			AdvancedUtil advancedUtil=new AdvancedUtil();
+			String customMsg=advancedUtil.getAdvancedMethod().makeTextCustomMessage("oA1HcvwJj9KKuPC6fmRWm8h6Qv4I", "糠糠,你在干嘛呀？");
 			//发送客服消息
-			boolean custom=AdvancedUtil.sendCustomMessage(accessToken, customMsg);
+			boolean custom=advancedUtil.getAdvancedMethod().sendCustomMessage(accessToken, customMsg);
 			System.out.println("发送客服消息：："+custom);
 		}
 		

@@ -17,8 +17,8 @@ public class WeiXinCommon {
 	 * ngrok.plub ”Ú√˚ http://newtkwx.ngrok.club
 	 * 
 	 */
-	public static final String WEIXIN_URL="http://newtkwx.ngrok.club/FirstProj/WxServlet";
-	public static final String REDIRECT_URI="http://newtkwx.ngrok.club/FirstProj/OAuthServlet";
+	public static final String WEIXIN_URL="http://newtkwx.ngrok.cc/FirstProj/WxServlet";
+	public static final String REDIRECT_URI="http://newtkwx.ngrok.cc/FirstProj/OAuthServlet";
 	public static final String OAUTH_URL="http://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 
 	/**

@@ -1,5 +1,6 @@
 package lgc.servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lgc.service.ChatService;
 import lgc.service.MessageService;
 import lgc.util.SignUtil;
 
@@ -123,6 +125,14 @@ public class WxServlet extends HttpServlet {
 		
 	}
 	
+	@Override
+	public void init() throws ServletException {
+		File indexDir=new File(ChatService.getIndexDir());
+		//如果索引目录不存在，则创建目录
+		if (!indexDir.exists()) {
+			ChatService.createIndex();
+		}
+	}
 	
 	
 }
