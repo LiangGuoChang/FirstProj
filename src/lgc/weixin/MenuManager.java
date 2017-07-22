@@ -51,27 +51,28 @@ public class MenuManager {
 		b22.setType("view");
 		b22.setUrl("http://m.jd.com");
 		
-		ViewButton b31 = new ViewButton();
-		b31.setName("多泡");
-		b31.setType("view");
-		b31.setUrl("http://www.duopao.com");
-
-		ViewButton b32 = new ViewButton();
-		b32.setName("一窝88");
-		b32.setType("view");
-		b32.setUrl("http://www.yi588.com");
+		ViewButton b23 = new ViewButton();
+		b23.setName("多泡");
+		b23.setType("view");
+		b23.setUrl("http://www.duopao.com");
 		
-		ViewButton b33=new ViewButton();
+		ViewButton b31=new ViewButton();
 		String url0=WeiXinCommon.OAUTH_URL;
 		String url1=CommonUtil.urlEncodingUTF8(WeiXinCommon.REDIRECT_URI);
 		url0=url0.replace("APPID",WeiXinCommon.appID);
 		url0=url0.replace("REDIRECT_URI", url1);
 		
-		b33.setName("身份认证");
-		b33.setType("view");
-		b33.setUrl(url0);
+		b31.setName("身份认证");
+		b31.setType("view");
+		b31.setUrl(url0);
 		
 		System.out.println("url0::"+"\n"+url0);
+		
+		
+		ClickButton b32=new ClickButton();
+		b32.setName("公众号二维码");
+		b32.setType("click");
+		b32.setKey("qrcode");
 		
 		
 		ComplexButton mainB1=new ComplexButton();
@@ -79,12 +80,12 @@ public class MenuManager {
 		mainB1.setSub_button(new Button[]{b11,b12});
 		
 		ComplexButton mainB2=new ComplexButton();
-		mainB2.setName("购物");
-		mainB2.setSub_button(new Button[]{b21,b22});
+		mainB2.setName("购物娱乐");
+		mainB2.setSub_button(new Button[]{b21,b22,b23});
 		
 		ComplexButton mainB3=new ComplexButton();
-		mainB3.setName("游戏娱乐");
-		mainB3.setSub_button(new Button[]{b31,b32,b33});
+		mainB3.setName("工具");
+		mainB3.setSub_button(new Button[]{b31,b32});
 		
 		Menu menu=new Menu();
 		menu.setButton(new Button[]{mainB1,mainB2,mainB3});

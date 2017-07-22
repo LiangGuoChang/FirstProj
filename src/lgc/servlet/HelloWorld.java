@@ -1,6 +1,9 @@
 package lgc.servlet;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import lgc.bean.pojo.Token;
@@ -13,6 +16,7 @@ import lgc.bean.pojo.WeiXinUserList;
 import lgc.service.ChatService;
 import lgc.util.AdvancedUtil;
 import lgc.util.CommonUtil;
+import net.sf.json.JSONObject;
 
 public class HelloWorld {
 	
@@ -58,9 +62,32 @@ public class HelloWorld {
 //		System.out.println(media.getWeixinMedia());
 		
 //		String downLoadfile=AdvancedUtil.downLoadMedia(access_token, mediaId, savePath);
+//		String path="D:/soft/Tomcat/tomcat8044/apache-tomcat-8.0.44/webapps/ROOT/WeiXinMedia/usersMedia/voice/test.mp3";
+		String path="D:/MaLady.mp3";
+//		String path="http://newtkwx.ngrok.cc/WeiXinMedia/usersMedia/voice/MaLady.mp3";
+//		String path="http://newtkwx.ngrok.cc/WeiXinMedia/qrcodes/1500617334.jpg";
 		AdvancedUtil advancedUtil=new AdvancedUtil();
-		String hello=advancedUtil.getAdvancedMethod().getHello();
-		System.out.println(hello);
+//		String hello=advancedUtil.getAdvancedMethod().getHello();
+//		System.out.println(hello);
+		/*
+		WeiXinMedia media=advancedUtil.getAdvancedMethod().uploadTemporaryMedia(access_token, "voice", path);
+		System.out.println(media.getWeixinMedia());
+		*/
+		
+		
+		File file=new File(path);
+		
+		String jsonObject=null;
+		try {
+			jsonObject=advancedUtil.getAdvancedMethod().upload(path, access_token, "voice");
+		}catch (Exception e) {
+//			e.printStackTrace();
+			System.out.println(e.toString());
+		}
+		
+		System.out.println(jsonObject.toString());
+		
+		
 	}
 	/*
 	//´´½¨¶þÎ¬Âë

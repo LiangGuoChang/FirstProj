@@ -34,6 +34,8 @@ public class WeiXinCommon {
 	 * 从微信服务器中下载的媒体文件存放在本地服务器的根目录
 	 */
 	public static final String downLoadFilePathComm="D:/soft/Tomcat/tomcat8044/apache-tomcat-8.0.44/webapps/ROOT/WeiXinMedia/usersMedia";
+	public static final String downloadQrCode="D:/soft/Tomcat/tomcat8044/apache-tomcat-8.0.44/webapps/ROOT/WeiXinMedia/qrcodes";
+	public static final String qrCodeRoot="http://newtkwx.ngrok.cc/WeiXinMedia/qrcodes/";
 	
 	/**
 	 * 百度地图开发服务端ak CA21bdecc75efc1664af5a195c30bb4e 

@@ -1,5 +1,8 @@
 package lgc.interfaces;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import lgc.bean.pojo.SNSUserInfo;
@@ -12,6 +15,7 @@ import lgc.bean.pojo.WeiXinUserInfo;
 import lgc.bean.pojo.WeiXinUserList;
 import lgc.bean.response.Article;
 import lgc.bean.response.Music;
+import net.sf.json.JSONObject;
 
 /**
  * 公众号高级接口接口类
@@ -247,6 +251,14 @@ public interface AdvancedInterface {
 	 */
 	WeiXinMedia uploadTemporaryMedia(String accessToken, String type, String mediaFileUrl);
 	
+	String upload(String filePath, String accessToken, String type)throws IOException, NoSuchAlgorithmException;
+	
+	JSONObject uploadMedia(File file, String token, String type);
+	
+	
+	WeiXinMedia uploadMedia(String accessToken, String type, String mediaFileUrl);
+	
+	
 	/**
 	 * 从微信服务器上下载对应 mediaId 的媒体文件
 	 * 
@@ -258,6 +270,7 @@ public interface AdvancedInterface {
 	 * @说明 可下载用户发送过来的媒体文件
 	 */
 	String downLoadMedia(String accessToken, String mediaId, String savePath);
+	
 	
 	/**
 	 * 测试方法

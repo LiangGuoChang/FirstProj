@@ -12,7 +12,11 @@ import lgc.BaiduMap.BaiduPoiPlace;
 import lgc.bean.database.UserLocation;
 import lgc.bean.database.UserLocationEvent;
 import lgc.bean.pojo.Token;
+import lgc.bean.pojo.WeiXinMedia;
+import lgc.bean.pojo.WeiXinTemporaryQRCode;
 import lgc.bean.response.Article;
+import lgc.bean.response.Image;
+import lgc.bean.response.ImageMessage;
 import lgc.bean.response.NewsMessage;
 import lgc.bean.response.TextMessage;
 import lgc.util.AdvancedUtil;
@@ -297,6 +301,35 @@ public class MessageService {
 						newsMessage.setArticles(articles);
 						//将图文对象转换为XML数据
 						respXml=MessageUtil.messageToXml(newsMessage);
+					}else if ("qrcode".equals(eventKey)) {
+						//获取临时带参二维码
+						AdvancedUtil advancedUtil2=new AdvancedUtil();
+						WeiXinTemporaryQRCode qrCode=advancedUtil2.getAdvancedMethod()
+								.createTemporaryQRCode(access_token, 60, 170721);
+						
+						System.out.println("qrCode.getUrl()::"+qrCode.getUrl());
+						System.out.println("qrCode.getTicket()::"+qrCode.getTicket());
+						System.out.println("qrCode.getExpireSeconds()::"+qrCode.getExpireSeconds());
+						
+						String savePath=advancedUtil2.getAdvancedMethod().getQRCode(qrCode.getTicket(), WeiXinCommon.downloadQrCode);
+						
+						System.out.println("savePath::"+savePath);
+						
+						
+						WeiXinMedia qrCodeMedia=advancedUtil2.getAdvancedMethod().uploadTemporaryMedia(access_token, "image", savePath);
+						
+						System.out.println("qrCodeMedia.getMediaId()::"+qrCodeMedia.getMediaId());
+						
+						Image qrCodeImg=new Image();
+						qrCodeImg.setMediaId(qrCodeMedia.getMediaId());
+						ImageMessage qrCodeMessage=new ImageMessage();
+						qrCodeMessage.setFromUserName(resp_fromUserName);
+						qrCodeMessage.setToUserName(resp_toUserName);;
+						qrCodeMessage.setCreateTime(new Date().getTime());
+						qrCodeMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_IMAGE);
+						qrCodeMessage.setImage(qrCodeImg);
+						//将图片对象转换为XML数据
+						respXml=MessageUtil.messageToXml(qrCodeMessage);
 					}
 					break;
 					
@@ -304,13 +337,7 @@ public class MessageService {
 					//用户点击菜单 view 不做回复
 					respXml="success";
 					break;
-
-				default:
-					break;
 				}
-				break;
-
-			default:
 				break;
 			}
 			
